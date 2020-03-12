@@ -34,6 +34,15 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="Assets/js/script.js"></script>
+    <script>
+      $(document).ready(function() {
+        console.log("Hello world");
+
+        var currentDay = moment().format("dddd, MMMM Do");
+        console.log(currentDay);
+
+        $("#currentDay").text(currentDay);
+      });
+    </script>
   </body>
 </html>
