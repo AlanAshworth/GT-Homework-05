@@ -36,83 +36,114 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
+
         // Display the current day at the top of the calendar
         var currentDay = moment().format("dddd, MMMM Do");
         $("#currentDay").text(currentDay);
 
-        // Present timeblocks for standard business hours
-        // A standard business day is generally considered
-        // to measure time from 9am - 5pm.
-        var now = parseInt(moment().format('H'));
-        var startOfBusinessDayHr = parseInt(moment().startOf("day").add(9, "hour").format("H"));
-        var endOfBusinessDayHr = parseInt(moment().endOf("day").subtract(7, "hour").add(1, "second").format("H"));
-        var businessHrs = ["09AM", "10AM", "11AM", "12PM", "01PM", "02PM", "03PM", "04PM", "05PM"];
+        //function calls-----------------------------------------------
+        renderTimeBlocks();
+        setTimeBlockColor();
 
-        // create rows, create labels and append to rows, then append rows to container
-        for (let i = 0; i < businessHrs.length; i++) {
-          var timeRow = $("<div>");
-          timeRow.addClass("row");
-          timeRow.attr("data-index", i);
+        //functions----------------------------------------------------
 
-          var timeBlock = $("<div>");
-          timeBlock.addClass("input-group mb-3 time-block");
+        // Present timeblocks for standard business hours.
+        // A standard business day is generally considered to measure time from 9am - 5pm.
+        function renderTimeBlocks() {
+          var now = parseInt(moment().format("H"));
+          var startOfBusinessDayHr = parseInt(
+            moment()
+              .startOf("day")
+              .add(9, "hour")
+              .format("H")
+          );
+          var endOfBusinessDayHr = parseInt(
+            moment()
+              .endOf("day")
+              .subtract(7, "hour")
+              .add(1, "second")
+              .format("H")
+          );
+          var businessHrs = [
+            "09AM",
+            "10AM",
+            "11AM",
+            "12PM",
+            "01PM",
+            "02PM",
+            "03PM",
+            "04PM",
+            "05PM"
+          ];
 
-          var timeLabel = $("<div>");
-          timeLabel.addClass("input-group-prepend hour");
-          timeLabel.text(businessHrs[i]);
+          // create rows, create labels and append to rows, then append rows to container
+          for (let i = 0; i < businessHrs.length; i++) {
+            var timeRow = $("<div>");
+            timeRow.addClass("row");
+            timeRow.attr("data-index", i);
 
-          var timeDescription = $("<textarea>");
-          timeDescription.addClass("form-control");
+            var timeBlock = $("<div>");
+            timeBlock.addClass("input-group mb-3 time-block");
 
-          var saveButton = $("<button>");
-          saveButton.addClass("btn btn-primary saveBtn")
+            var timeLabel = $("<div>");
+            timeLabel.addClass("input-group-prepend hour");
+            timeLabel.text(businessHrs[i]);
 
-          var icon = $("<i>");
-          icon.addClass("fas fa-save");
+            var timeDescription = $("<textarea>");
+            timeDescription.addClass("form-control");
+
+            var saveButton = $("<button>");
+            saveButton.addClass("btn btn-primary saveBtn");
+
+            var icon = $("<i>");
+            icon.addClass("fas fa-save");
+
+            saveButton.append(icon);
+            timeBlock.append(timeLabel);
+            timeBlock.append(timeDescription);
+            timeBlock.append(saveButton);
+            timeRow.append(timeBlock);
+            $(".container").append(timeRow);
+          }
           
-          saveButton.append(icon);
-          timeBlock.append(timeLabel);
-          timeBlock.append(timeDescription);
-          timeBlock.append(saveButton);
-          timeRow.append(timeBlock)
-          $(".container").append(timeRow);
-        }
-        console.log("The current hour is: ", now);
-        for (let businessHr = startOfBusinessDayHr; businessHr <= endOfBusinessDayHr; businessHr++) {
-          console.log(businessHr);
-          if(businessHr < now){
-            console.log("set me to gray (.past)");
-            if (timeDescription.hasClass("present")) {
-              timeDescription.removeClass("present");
-              timeDescription.addClass("past");
-            } else if (timeDescription.hasClass("future")) {
-              timeDescription.removeClass("future");
-              timeDescription.addClass("past");
-            } else {
-              timeDescription.addClass("past");
-            }
-          } else 
-          if (businessHr === now) {
-            console.log("set me to red (.present)");
-            if (timeDescription.hasClass("past")) {
-              timeDescription.removeClass("past");
-              timeDescription.addClass("present");
-            } else if (timeDescription.hasClass("future")) {
-              timeDescription.removeClass("future");
-              timeDescription.addClass("present");
-            } else {
-              timeDescription.addClass("present");
-            }
-          } else {
-            console.log("set me to green (.future)");
-            if (timeDescription.hasClass("past")) {
-              timeDescription.removeClass("past");
-              timeDescription.addClass("future");
-            } else if (timeDescription.hasClass("present")) {
-              timeDescription.removeClass("present");
-              timeDescription.addClass("future");
-            } else {
-              timeDescription.addClass("future");
+          function setTimeBlockColor(startOfBusinessDayHr, endOfBusinessDayHr) {
+            // console.log("The current hour is: ", now);
+            for ( let businessHr = startOfBusinessDayHr; businessHr <= endOfBusinessDayHr; businessHr++) {
+              // console.log(businessHr);
+              if (businessHr < now) {
+                // console.log("set me to gray (.past)");
+                if (timeDescription.hasClass("present")) {
+                  timeDescription.removeClass("present");
+                  timeDescription.addClass("past");
+                } else if (timeDescription.hasClass("future")) {
+                  timeDescription.removeClass("future");
+                  timeDescription.addClass("past");
+                } else {
+                  timeDescription.addClass("past");
+                }
+              } else if (businessHr === now) {
+                // console.log("set me to red (.present)");
+                if (timeDescription.hasClass("past")) {
+                  timeDescription.removeClass("past");
+                  timeDescription.addClass("present");
+                } else if (timeDescription.hasClass("future")) {
+                  timeDescription.removeClass("future");
+                  timeDescription.addClass("present");
+                } else {
+                  timeDescription.addClass("present");
+                }
+              } else {
+                // console.log("set me to green (.future)");
+                if (timeDescription.hasClass("past")) {
+                  timeDescription.removeClass("past");
+                  timeDescription.addClass("future");
+                } else if (timeDescription.hasClass("present")) {
+                  timeDescription.removeClass("present");
+                  timeDescription.addClass("future");
+                } else {
+                  timeDescription.addClass("future");
+                }
+              }
             }
           }
         }
