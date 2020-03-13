@@ -77,19 +77,45 @@
           timeRow.append(timeBlock)
           $(".container").append(timeRow);
         }
-
+        console.log("The current hour is: ", now);
         for (let businessHr = startOfBusinessDayHr; businessHr <= endOfBusinessDayHr; businessHr++) {
           console.log(businessHr);
           if(businessHr < now){
             console.log("set me to gray (.past)");
+            if (timeDescription.hasClass("present")) {
+              timeDescription.removeClass("present");
+              timeDescription.addClass("past");
+            } else if (timeDescription.hasClass("future")) {
+              timeDescription.removeClass("future");
+              timeDescription.addClass("past");
+            } else {
+              timeDescription.addClass("past");
+            }
           } else 
           if (businessHr === now) {
             console.log("set me to red (.present)");
+            if (timeDescription.hasClass("past")) {
+              timeDescription.removeClass("past");
+              timeDescription.addClass("present");
+            } else if (timeDescription.hasClass("future")) {
+              timeDescription.removeClass("future");
+              timeDescription.addClass("present");
+            } else {
+              timeDescription.addClass("present");
+            }
           } else {
             console.log("set me to green (.future)");
+            if (timeDescription.hasClass("past")) {
+              timeDescription.removeClass("past");
+              timeDescription.addClass("future");
+            } else if (timeDescription.hasClass("present")) {
+              timeDescription.removeClass("present");
+              timeDescription.addClass("future");
+            } else {
+              timeDescription.addClass("future");
+            }
           }
         }
-        console.log(now);
       });
     </script>
   </body>
