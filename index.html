@@ -43,6 +43,7 @@
         // Present timeblocks for standard business hours
         // A standard business day is generally considered
         // to measure time from 9am - 5pm.
+        var now = parseInt(moment().format('H'));
         var startOfBusinessDayHr = parseInt(moment().startOf("day").add(9, "hour").format("H"));
         var endOfBusinessDayHr = parseInt(moment().endOf("day").subtract(7, "hour").add(1, "second").format("H"));
         var businessHrs = ["09AM", "10AM", "11AM", "12PM", "01PM", "02PM", "03PM", "04PM", "05PM"];
@@ -62,29 +63,33 @@
 
           var timeDescription = $("<textarea>");
           timeDescription.addClass("form-control");
+
+          var saveButton = $("<button>");
+          saveButton.addClass("btn btn-primary saveBtn")
+
+          var icon = $("<i>");
+          icon.addClass("fas fa-save");
           
+          saveButton.append(icon);
           timeBlock.append(timeLabel);
           timeBlock.append(timeDescription);
+          timeBlock.append(saveButton);
           timeRow.append(timeBlock)
           $(".container").append(timeRow);
         }
 
-        // for (let i = 0; i < businessHrs.length; i++) {
-        //   var timeBlock = $("<div>");
-        //   timeBlock.addClass("row");
-        //   timeBlock.attr("data-index", i);
-
-        //   var timeLabel = $("<div>");
-        //   timeLabel.addClass("input-group-prepend hour");
-        //   timeLabel.text(businessHrs[i]);
-
-        //   var timeDescription = $("<textarea>");
-        //   timeDescription.addClass("form-control");
-          
-        //   timeBlock.append(timeLabel);
-        //   timeBlock.append(timeDescription);
-        //   $(".container").append(timeBlock);
-        // }
+        for (let businessHr = startOfBusinessDayHr; businessHr <= endOfBusinessDayHr; businessHr++) {
+          console.log(businessHr);
+          if(businessHr < now){
+            console.log("set me to gray (.past)");
+          } else 
+          if (businessHr === now) {
+            console.log("set me to red (.present)");
+          } else {
+            console.log("set me to green (.future)");
+          }
+        }
+        console.log(now);
       });
     </script>
   </body>
