@@ -34,14 +34,36 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script>
+    <script type="text/javascript">
       $(document).ready(function() {
-        console.log("Hello world");
-
+        // Display the current day at the top of the calendar
         var currentDay = moment().format("dddd, MMMM Do");
-        console.log(currentDay);
-
         $("#currentDay").text(currentDay);
+
+        // Present timeblocks for standard business hours
+        // A standard business day is generally considered
+        // to measure time from 9am - 5pm.
+        var startOfBusinessDayHr = parseInt(moment().startOf("day").add(9, "hour").format("H"));
+        var endOfBusinessDayHr = parseInt(moment().endOf("day").subtract(7, "hour").add(1, "second").format("H"));
+        var businessHrs = ["9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm"];
+
+        // create rows, create labels and append to rows, then append rows to container
+        for (let i = 0; i < businessHrs.length; i++) {
+          var timeBlock = $("<div>");
+          timeBlock.addClass("row");
+          timeBlock.attr("data-index", i);
+
+          var timeLabel = $("<div>");
+          timeLabel.addClass("input-group-prepend hour");
+          timeLabel.text(businessHrs[i]);
+
+          var timeDescription = $("<textarea>");
+          timeDescription.addClass("form-control");
+          
+          timeBlock.append(timeLabel);
+          timeBlock.append(timeDescription);
+          $(".container").append(timeBlock);
+        }
       });
     </script>
   </body>
