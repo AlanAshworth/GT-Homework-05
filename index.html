@@ -36,7 +36,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-
+        // Variable for storing hourly notes.
         var myEvents = [
           "hour - 0",
           "hour - 1",
@@ -47,44 +47,49 @@
           "hour - 6",
           "hour - 7",
           "hour - 8"
-          ];
+        ];
 
-        //function calls-----------------------------------------------
+        //Function Calls-------------------------------------------------------
         renderCurrentDay();
         initializePlanner();
 
-        //functions----------------------------------------------------
-          
+        //Functions------------------------------------------------------------
+
         // Display the current day at the top of the calendar
         function renderCurrentDay() {
           var currentDay = moment().format("dddd, MMMM Do");
           $("#currentDay").text(currentDay);
         }
 
-        // Present timeblocks for standard business hours.
-        // A standard business day is generally considered to measure time from 9am - 5pm.
+        // Present time blocks for standard business hours.
+        // Dynamically create rows of time intervals, with textare's for
+        // notes and buttons for saving notes.
         function renderTimeBlocks() {
-
           var now = moment();
           var currentHour = parseInt(now.format("H"));
           var startOfBusinessDayHr = 9;
           var endOfBusinessDayHr = 17;
 
-          // create rows, create labels and append to rows, then append rows to container
-          for (let i = 0;i < myEvents.length;i++) {
-            console.log("Business hr: " + (i + startOfBusinessDayHr) + ", " + "Current hour: " + currentHour);
+          for (let i = 0; i < myEvents.length; i++) {
+            console.log(
+              "Business hr: " +
+                (i + startOfBusinessDayHr) +
+                ", " +
+                "Current hour: " +
+                currentHour
+            );
             var myEvent = myEvents[i];
-            
+
             var timeRow = $("<div>");
             timeRow.addClass("row");
             timeRow.attr("data-index", i);
-            
+
             var timeBlock = $("<form>");
             timeBlock.addClass("input-group time-block");
 
             var timeLabel = $("<label>");
             timeLabel.addClass("input-group-prepend hour");
-            let setHour = moment((i + startOfBusinessDayHr), "H");
+            let setHour = moment(i + startOfBusinessDayHr, "H");
             timeLabel.text(setHour.format("hhA"));
 
             var timeDescription = $("<textarea>");
@@ -97,9 +102,9 @@
             var icon = $("<i>");
             icon.addClass("fas fa-save");
 
-            if ((i + startOfBusinessDayHr) < currentHour){
+            if (i + startOfBusinessDayHr < currentHour) {
               timeDescription.addClass("form-control past");
-            } else if ((i + startOfBusinessDayHr) === currentHour) {
+            } else if (i + startOfBusinessDayHr === currentHour) {
               timeDescription.addClass("form-control present");
             } else {
               timeDescription.addClass("form-control future");
@@ -114,24 +119,27 @@
           }
         }
 
+        // Get from local storage and write to rendered time blocks.
         function initializePlanner() {
           var savedEvents = JSON.parse(localStorage.getItem("myEvents"));
 
-          if(savedEvents !== null) {
+          if (savedEvents !== null) {
             myEvents = savedEvents;
           }
           renderTimeBlocks();
         }
 
+        // Store contents from DOM time block and write to local storage.
         function saveEvents() {
           localStorage.setItem("myEvents", JSON.stringify(myEvents));
         }
 
+        // Event-Listeners-----------------------------------------------------
         $(".saveBtn").on("submit", function(event) {
           event.preventDefault();
           var planningText = $.trim($(".description").val());
 
-          if(planningText === ""){
+          if (planningText === "") {
             return;
           }
 
@@ -140,66 +148,17 @@
 
           saveEvents();
           renderTimeBlocks();
-        })
-        
+        });
+
         $(".row").on("click", function(event) {
           event.preventDefault();
           var element = event.target;
 
-          if(element.matches("button") === true) {
+          if (element.matches("button") === true) {
             saveEvents();
             renderTimeBlocks();
           }
-        })
-        
-        // function renderTimeBlocks() {
-        //   // var startOfBusinessDayHr = parseInt(moment().startOf("day").add(9, "hour").format("H"));
-        //   // var endOfBusinessDayHr = parseInt(moment().endOf("day").subtract(7, "hour").add(1, "second").format("H"));
-        //   var now = parseInt(moment().format("H"));
-        //   var startOfBusinessDayHr = 9;
-        //   var endOfBusinessDayHr = 17;
-
-        //   // create rows, create labels and append to rows, then append rows to container
-        //   for (let businessHr = startOfBusinessDayHr;businessHr <= endOfBusinessDayHr;businessHr++) {
-        //     console.log("Business hr: " + businessHr + ", " + "Now: " + now);
-            
-        //     var timeRow = $("<div>");
-        //     timeRow.addClass("row");
-        //     timeRow.attr("data-index", businessHr - startOfBusinessDayHr);
-            
-        //     var timeBlock = $("<form>");
-        //     timeBlock.addClass("input-group time-block");
-
-        //     var timeLabel = $("<label>");
-        //     timeLabel.addClass("input-group-prepend hour");
-        //     let setHour = moment(businessHr, "H");
-        //     timeLabel.text(setHour.format("hhA"));
-
-        //     var timeDescription = $("<textarea>");
-        //     timeDescription.addClass("form-control description");
-
-        //     var saveButton = $("<button>");
-        //     saveButton.addClass("btn btn-primary saveBtn");
-
-        //     var icon = $("<i>");
-        //     icon.addClass("fas fa-save");
-
-        //     if (businessHr < now){
-        //       timeDescription.addClass("form-control past");
-        //     } else if (businessHr === now) {
-        //       timeDescription.addClass("form-control present");
-        //     } else {
-        //       timeDescription.addClass("form-control future");
-        //     }
-
-        //     saveButton.append(icon);
-        //     timeBlock.append(timeLabel);
-        //     timeBlock.append(timeDescription);
-        //     timeBlock.append(saveButton);
-        //     timeRow.append(timeBlock);
-        //     $(".container").append(timeRow);
-        //   }
-        // }
+        });
       });
     </script>
   </body>
